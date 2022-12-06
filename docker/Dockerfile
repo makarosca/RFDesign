@@ -77,7 +77,18 @@ RUN tar -xjf PyRosetta4.Release.python38.linux.release-336.tar.bz2
 RUN pip install -e PyRosetta4.Release.python38.linux.release-336/setup
 RUN rm PyRosetta4.Release.python38.linux.release-336.tar.bz2
 
+# Needed for RosettaFold
 RUN pip install pandas
+
+# Needed for AF2 Interface Metrics
+RUN pip install mock
+
+RUN git clone https://github.com/bcov77/silent_tools.git
+# Need to use patched version to fix: https://github.com/bcov77/silent_tools/issues/2
+COPY patched_files/silentfrompdbs silent_tools/silentfrompdbs
+RUN chmod +x silent_tools/silentfrompdbs
+
+RUN echo "source activate rfdesign-cuda" > ~/.bashrc
 
 COPY envs RFDesign/envs
 COPY hallucination RFDesign/hallucination
@@ -85,6 +96,8 @@ COPY inpainting RFDesign/inpainting
 COPY se3_transformer RFDesign/se3_transformer
 COPY scripts RFDesign/scripts
 
-#COPY output /output
+COPY 2chain-output /output
 
 COPY biolib_run.sh RFDesign/biolib_run.sh
+COPY test.sh .
+RUN chmod +x test.sh
