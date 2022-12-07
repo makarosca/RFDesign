@@ -1,5 +1,5 @@
 # Install PyRosetta
-pip3 install -e /root/PyRosetta4.Release.python38.linux.release-336
+pip3 install -e /root/pyrosetta/PyRosetta4.Release.python38.linux.release-336
 
 #!/bin/bash
 mkdir /output

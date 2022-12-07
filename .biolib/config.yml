@@ -15,7 +15,7 @@ modules:
         target_path: /software/mlfold/alphafold-data/
       - 
         uri: DTU-Bioengineering/PyRosetta38
-        target_path: /root/
+        target_path: /root/pyrosetta/
     
 arguments:
     -
