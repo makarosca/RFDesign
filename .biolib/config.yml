@@ -10,8 +10,9 @@ modules:
     default_machine: 'gpu.small'
 
     large_file_systems: 
-      uri: alphafold/params
-      target_path: /software/mlfold/alphafold-data/
+      -
+        uri: alphafold/params
+        target_path: /software/mlfold/alphafold-data/
     
 arguments:
     -
