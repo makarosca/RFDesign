@@ -15,3 +15,6 @@ RFDesign/scripts/trfold_relax.sh /output/
 
 # Run PyRosetta metrics
 /root/miniconda3/envs/rfdesign-cuda/bin/python3 RFDesign/scripts/pyrosetta_metrics.py /output/trf_relax
+
+# Run Compile Metrics
+/root/miniconda3/envs/rfdesign-cuda/bin/python3 RFDesign/scripts/compile_metrics.py /output/trf_relax
