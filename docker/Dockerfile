@@ -85,6 +85,9 @@ COPY inpainting RFDesign/inpainting
 COPY se3_transformer RFDesign/se3_transformer
 COPY scripts RFDesign/scripts
 
+RUN echo "source activate env" > ~/.bashrc
+ENV PATH /opt/conda/envs/env/bin:$PATH
+
 #COPY output /output
 
 COPY biolib_run.sh RFDesign/biolib_run.sh
