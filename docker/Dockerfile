@@ -89,6 +89,8 @@ COPY patched_files/silentfrompdbs silent_tools/silentfrompdbs
 RUN chmod +x silent_tools/silentfrompdbs
 
 RUN echo "source activate rfdesign-cuda" > ~/.bashrc
+COPY rosetta_scripts.static.linuxgccrelease .
+COPY database /database
 
 COPY envs RFDesign/envs
 COPY hallucination RFDesign/hallucination
