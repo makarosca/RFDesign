@@ -13,6 +13,9 @@ modules:
       -
         uri: alphafold/params
         target_path: /software/mlfold/alphafold-data/
+      - 
+        uri: DTU-Bioengineering/PyRosetta38
+        target_path: /root/
     
 arguments:
     -
