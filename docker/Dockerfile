@@ -85,8 +85,8 @@ COPY inpainting RFDesign/inpainting
 COPY se3_transformer RFDesign/se3_transformer
 COPY scripts RFDesign/scripts
 
-RUN echo "source activate env" > ~/.bashrc
-ENV PATH /opt/conda/envs/env/bin:$PATH
+RUN echo "source activate rfdesign-cuda" > ~/.bashrc
+ENV PATH /root/miniconda/envs/rfdesign-cuda/bin:$PATH
 
 #COPY output /output
 
