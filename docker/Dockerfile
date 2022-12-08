@@ -72,10 +72,10 @@ SHELL ["conda", "run", "-n", "rfdesign-cuda", "/bin/bash", "-c"]
 
 # COPY params /software/mlfold/alphafold-data/params
 
-# COPY PyRosetta4.Release.python38.linux.release-336.tar.bz2 .
-# RUN tar -xjf PyRosetta4.Release.python38.linux.release-336.tar.bz2
-# RUN pip install -e PyRosetta4.Release.python38.linux.release-336/setup
-# RUN rm PyRosetta4.Release.python38.linux.release-336.tar.bz2
+COPY PyRosetta4.Release.python38.linux.release-336.tar.bz2 .
+RUN tar -xjf PyRosetta4.Release.python38.linux.release-336.tar.bz2
+RUN pip install -e PyRosetta4.Release.python38.linux.release-336/setup
+RUN rm PyRosetta4.Release.python38.linux.release-336.tar.bz2
 
 RUN pip install pandas
 
