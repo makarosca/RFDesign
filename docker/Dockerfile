@@ -116,3 +116,7 @@ COPY two_chain.sh .
 RUN chmod +x two_chain.sh
 COPY test.sh .
 RUN chmod +x test.sh
+COPY pyjd2_patch /root/silent_tools/pyjd2
+RUN chmod +x /root/silent_tools/pyjd2
+COPY silent_tools_patch.py /root/silent_tools/silent_tools.py
+RUN chmod +x /root/silent_tools/silent_tools.py
