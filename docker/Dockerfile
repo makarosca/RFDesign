@@ -87,10 +87,19 @@ RUN git clone https://github.com/bcov77/silent_tools.git
 # Need to use patched version to fix: https://github.com/bcov77/silent_tools/issues/2
 COPY patched_files/silentfrompdbs silent_tools/silentfrompdbs
 RUN chmod +x silent_tools/silentfrompdbs
+RUN apt update && apt install -y libgfortran5 tcsh
+COPY dalphaball /software/rosetta/DAlphaBall.gcc
 
 RUN echo "source activate rfdesign-cuda" > ~/.bashrc
 COPY rosetta_scripts.static.linuxgccrelease .
 COPY database /database
+
+RUN git clone https://github.com/psipred/psipred.git
+RUN cd psipred/src && make && make install
+RUN ln -s /root/psipred /software/psipred4
+RUN PATH="/software/psipred4/bin:${PATH}"
+COPY runpsipred_single /root/psipred/runpsipred_single
+RUN chmod +x /root/psipred/runpsipred_single
 
 COPY envs RFDesign/envs
 COPY hallucination RFDesign/hallucination
@@ -98,8 +107,12 @@ COPY inpainting RFDesign/inpainting
 COPY se3_transformer RFDesign/se3_transformer
 COPY scripts RFDesign/scripts
 
-COPY 2chain-output /output
+COPY tutorials/halluc_SH3_binder/output/hits_sh3_r1/sh3_r1_66.fas RFDesign/
+#COPY 2chain-output /output
 
 COPY biolib_run.sh RFDesign/biolib_run.sh
+RUN chmod +x RFDesign/biolib_run.sh
+COPY two_chain.sh .
+RUN chmod +x two_chain.sh
 COPY test.sh .
 RUN chmod +x test.sh

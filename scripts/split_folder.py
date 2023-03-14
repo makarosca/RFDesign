@@ -12,6 +12,8 @@ def split_folder(folder, batch_size, trb_dir=None, start_batch=0, ndigits=None):
         trb_dir = folder+'/../'
         
     filenames = sorted(glob.glob(folder+'*pdb'))
+    print(folder)
+    print(len(filenames))
     if ndigits is None:
         ndigits = int(np.ceil(np.log10(len(filenames)/N)))
 
@@ -28,6 +30,8 @@ def split_folder(folder, batch_size, trb_dir=None, start_batch=0, ndigits=None):
         if i>=N:
             b += 1
             i = 0
+
+
 
 
 split_folder(folder=sys.argv[1], batch_size=5)
