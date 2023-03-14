@@ -4,7 +4,7 @@ modules:
     image: 'local-docker://rfdesign:latest'
     command: 'bash /root/RFDesign/biolib_run.sh'
     input_files:
-      - COPY / /
+      - COPY / /root/
     output_files: 
       - COPY /output/ /
     default_machine: 'gpu.small'
