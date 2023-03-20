@@ -19,7 +19,7 @@ from Bio.PDB.Polypeptide import PPBuilder
 from Bio.PDB import PDBParser
 from Bio.PDB.mmcifio import MMCIFIO
 
-sys.path.insert( 0, '/home/nrbennet/software/dl/af2/alphafold' )
+sys.path.insert( 0, '/root/RFDesign/hallucination/models/alphafold' )
 
 import scipy
 
@@ -37,7 +37,7 @@ from alphafold.model import config
 from alphafold.model import model
 from alphafold.data.tools import hhsearch
 
-sys.path.append( '/home/nrbennet/software/silent_tools' )
+sys.path.append( '/root/silent_tools' )
 import silent_tools
 
 # Run with Nate's ampere environment
@@ -74,7 +74,7 @@ model_config.model.global_config.mixed_precision = False
 model_config.data.common.max_extra_msa = 5
 model_config.data.eval.max_msa_clusters = 5
 
-model_params = data.get_model_haiku_params(model_name=model_name, data_dir="/projects/ml/alphafold") # CHANGE THIS (directory where "params/ folder is")
+model_params = data.get_model_haiku_params(model_name=model_name, data_dir="/software/mlfold/alphafold-data") # CHANGE THIS (directory where "params/ folder is")
 model_runner = model.RunModel(model_config, model_params)
 
 def get_seq_from_pdb( pdb_fn ):
@@ -427,9 +427,16 @@ def predict_structure(tags, feature_dict_dict, binderlen_dict, initial_guess_dic
   model_runner.params = model_params
   
   processed_feature_dict, processed_initial_guess_dict = combine_batches(tags, feature_dict_dict, initial_guess_dict)
+  # Original code, thought it breaks:
+  # - https://github.com/RosettaCommons/RFDesign/issues/38
+  # - https://github.com/RosettaCommons/RFDesign/issues/25
+  # - https://github.com/RosettaCommons/RFDesign/issues/13
 
-  prediction_result = jax.vmap(model_runner.apply, in_axes=(None,None,0,0))(model_runner.params,
-          jax.random.PRNGKey(0), processed_feature_dict, processed_initial_guess_dict)
+  # prediction_result = jax.vmap(model_runner.apply, in_axes=(None,None,0,0))(model_runner.params,
+  #         jax.random.PRNGKey(0), processed_feature_dict, processed_initial_guess_dict)
+  
+  prediction_result = jax.vmap(model_runner.apply, in_axes=(None,None,0))(model_runner.params,
+        jax.random.PRNGKey(0), processed_feature_dict)
 
   unpack_batches( tags, binderlen_dict, start, feature_dict_dict, prediction_result, sfd_out, scorefilename ) 
 

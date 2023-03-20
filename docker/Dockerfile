@@ -35,6 +35,7 @@ RUN conda update -n base -c defaults conda \
   && conda init bash \
   && conda clean -afy
 
+
 # Note that we are using a different version of pytorch than recommended
 # in RFDesign readme (suggested version is pytorch=1.10.1)
 RUN conda create -n rfdesign-cuda \
@@ -64,4 +65,58 @@ RUN /root/miniconda3/envs/rfdesign-cuda/bin/pip install \
         tensorflow-gpu==2.9.0 \
         biopython==1.79 \
     && conda clean -afy
+
+
+ENV PATH="/opt/conda/bin:$PATH"
+SHELL ["conda", "run", "-n", "rfdesign-cuda", "/bin/bash", "-c"]
+
+COPY params /software/mlfold/alphafold-data/params
+
+COPY PyRosetta4.Release.python38.linux.release-336.tar.bz2 .
+RUN tar -xjf PyRosetta4.Release.python38.linux.release-336.tar.bz2
+RUN pip install -e PyRosetta4.Release.python38.linux.release-336/setup
+RUN rm PyRosetta4.Release.python38.linux.release-336.tar.bz2
+
+# Needed for RosettaFold
+RUN pip install pandas
+
+# Needed for AF2 Interface Metrics
+RUN pip install mock
+
+RUN git clone https://github.com/bcov77/silent_tools.git
+# Need to use patched version to fix: https://github.com/bcov77/silent_tools/issues/2
+COPY patched_files/silentfrompdbs silent_tools/silentfrompdbs
+RUN chmod +x silent_tools/silentfrompdbs
+RUN apt update && apt install -y libgfortran5 tcsh
+COPY dalphaball /software/rosetta/DAlphaBall.gcc
+
+RUN echo "source activate rfdesign-cuda" > ~/.bashrc
+COPY rosetta_scripts.static.linuxgccrelease .
+COPY database /database
+
+RUN git clone https://github.com/psipred/psipred.git
+RUN cd psipred/src && make && make install
+RUN ln -s /root/psipred /software/psipred4
+RUN PATH="/software/psipred4/bin:${PATH}"
+COPY runpsipred_single /root/psipred/runpsipred_single
+RUN chmod +x /root/psipred/runpsipred_single
+
+COPY envs RFDesign/envs
+COPY hallucination RFDesign/hallucination
+COPY inpainting RFDesign/inpainting
+COPY se3_transformer RFDesign/se3_transformer
+COPY scripts RFDesign/scripts
+
+COPY tutorials/halluc_SH3_binder/output/hits_sh3_r1/sh3_r1_66.fas RFDesign/
+#COPY 2chain-output /output
+
 COPY biolib_run.sh RFDesign/biolib_run.sh
+RUN chmod +x RFDesign/biolib_run.sh
+COPY two_chain.sh .
+RUN chmod +x two_chain.sh
+COPY test.sh .
+RUN chmod +x test.sh
+COPY pyjd2_patch /root/silent_tools/pyjd2
+RUN chmod +x /root/silent_tools/pyjd2
+COPY silent_tools_patch.py /root/silent_tools/silent_tools.py
+RUN chmod +x /root/silent_tools/silent_tools.py
